@@ -8,6 +8,47 @@ angular.module('addressFormatter', []).filter('address', function () {
 
 app.controller('MainCtrl', ['$scope', '$http', '$window', 'uiGridValidateService', '$q',function ($scope, $http, $window, uiGridValidateService,$q) {
 
+
+  $scope.addData = function() {
+     var n = $scope.gridOptions.data.length + 1;
+     $scope.gridOptions.data.push({
+           "id": n,
+           "guid": "0a1b0539-73ec-473a-846a-71a58e04551c",
+           "isActive": false,
+           "balance": "$3,567.00",
+           "picture": "http://placehold.it/32x32",
+           "age": 21,
+           "name": "Bishop Carr",
+           "gender": "male",
+           "company": "Digirang",
+           "email": "bishopcarr@digirang.com",
+           "phone": "+1 (860) 463-2942",
+           "address": {
+               "street": 824,
+               "city": "Homeworth",
+               "state": "Oklahoma",
+               "zip": 5215
+           },
+           "about": "Nulla ullamco sint exercitation minim ea sunt. Excepteur minim tempor velit in. Proident id reprehenderit nisi officia in anim elit laboris aute sint amet voluptate. Deserunt et nostrud magna eu esse ea adipisicing non quis sint fugiat consectetur enim sint. Magna elit mollit eiusmod non voluptate sunt.\r\n",
+           "registered": "2012-10-15T19:03:24+05:00",
+           "friends": [
+               {
+                   "id": 0,
+                   "name": "Young Gentry"
+               },
+               {
+                   "id": 1,
+                   "name": "Dean Lopez"
+               },
+               {
+                   "id": 2,
+                   "name": "Mccray Bradford"
+               }
+           ]
+               });
+   };
+
+
   uiGridValidateService.setValidator('highlightFields',
     function(argument) {
       return function(oldValue, newValue, rowEntity, colDef) {
@@ -51,6 +92,10 @@ app.controller('MainCtrl', ['$scope', '$http', '$window', 'uiGridValidateService
           gridApi.validate.on.validationFailed($scope,function(rowEntity, colDef, newValue, oldValue){
               $scope.onLoadValidation = false;
           });
+          gridApi.edit.on.afterCellEdit($scope,function(rowEntity, colDef, newValue, oldValue){
+             $window.alert('edited row id:' + rowEntity.id + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue );
+             $scope.$apply();
+           });
 
           $scope.gridOptions.data = $scope.myJSON;
           if($scope.onLoadValidation)
