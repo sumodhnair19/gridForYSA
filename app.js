@@ -12,7 +12,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$window', 'uiGridValidateService
 
 
   $scope.addData = function() {
-     var n = $scope.gridOptions.data.length + 1;
+     var n = $scope.gridOptions.data.length;
      $scope.gridOptions.data.push({
            "id": n,
            "guid": "0a1b0539-73ec-473a-846a-71a58e04551c",
