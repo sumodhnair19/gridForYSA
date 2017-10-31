@@ -83,15 +83,14 @@ app.controller('MainCtrl', ['$scope', '$http', '$window', 'uiGridValidateService
     { name: 'id', enableCellEdit: true, width: '10%',
   editableCellTemplate: "<div><form name=\"inputForm\"><input type=\"INPUT_TYPE\" ng-class=\"'colt' + col.uid\" ui-grid-editor ng-model=\"MODEL_COL_FIELD\" name=\"label\" ng-minlength=\"3\" ng-maxlength=\"10\" required custom-validation></form></div><span class=\"error\" ng-show=\"!inputForm.$valid\">Invalid!</span>"},
     { name: 'name', displayName: 'Name (editable)', width: '20%',headerTooltip:true,cellTitleValidator : true,cellTooltipValidator:true,
-      validators: {required: true, highlightFields: ''},  cellTemplate: '<div class=\"ui-grid-cell-contents\" ng-class=\"{invalid:grid.validate.isInvalid(row.entity,col.colDef)}\" title=\"{{grid.appScope.myMethod(grid.validate.isInvalid(row.entity,col.colDef),row.entity,col.colDef)}}">{{COL_FIELD CUSTOM_FILTERS}}</div>'}
+      validators: {required: true, highlightFields: ''},  cellTemplate: '<div class=\"ui-grid-cell-contents\" ng-class=\"{invalid:grid.validate.isInvalid(row.entity,col.colDef)}\" title=\"{{grid.appScope.highlightError(grid.validate.isInvalid(row.entity,col.colDef),row.entity,col.colDef)}}">{{COL_FIELD CUSTOM_FILTERS}}</div>'}
   ];
 
 
 
 
-$scope.myMethod = function(trueOrFalse,rowEntity,colDef) {
+$scope.highlightError = function(trueOrFalse,rowEntity,colDef) {
 
-console.log(trueOrFalse);
 var textToShow= "";
 if(rowEntity["$$errorsname"] && rowEntity["$$errorsname"]["highlightFields"]) {
    textToShow = "Properties have been changed by another user, new change :" + rowEntity.oldName;
@@ -131,10 +130,10 @@ return textToShow;
 
         promise
             .then(function(data) {
-                console.log("then");
+              //  console.log("then");
             })
             .catch(function(data) {
-                  console.log("error");
+                //  console.log("error");
             })
     }
 
@@ -459,4 +458,4 @@ app.directive('customValidation', function(uiGridEditConstants) {
 
         }
     };
-}) 
+})
