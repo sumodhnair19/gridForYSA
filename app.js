@@ -80,7 +80,8 @@ app.controller('MainCtrl', ['$scope', '$http', '$window', 'uiGridValidateService
   $scope.gridOptions = { enableCellEditOnFocus: true };
 
   $scope.gridOptions.columnDefs = [
-    { name: 'id', enableCellEdit: false, width: '10%' },
+    { name: 'id', enableCellEdit: true, width: '10%',
+  editableCellTemplate: "<div><form name=\"inputForm\"><input type=\"INPUT_TYPE\" ng-class=\"'colt' + col.uid\" ui-grid-editor ng-model=\"MODEL_COL_FIELD\" name=\"label\" ng-minlength=\"3\" ng-maxlength=\"10\" required custom-validation></form></div><span class=\"error\" ng-show=\"!inputForm.$valid\">Invalid!</span>"},
     { name: 'name', displayName: 'Name (editable)', width: '20%',headerTooltip:true,cellTitleValidator : true,cellTooltipValidator:true,
       validators: {required: true, highlightFields: ''},  cellTemplate: '<div class=\"ui-grid-cell-contents\" ng-class=\"{invalid:grid.validate.isInvalid(row.entity,col.colDef)}\" title=\"{{grid.appScope.myMethod(grid.validate.isInvalid(row.entity,col.colDef),row.entity,col.colDef)}}">{{COL_FIELD CUSTOM_FILTERS}}</div>'}
   ];
@@ -112,7 +113,7 @@ return textToShow;
               $scope.onLoadValidation = false;
           });
           gridApi.edit.on.afterCellEdit($scope,function(rowEntity, colDef, newValue, oldValue){
-             $window.alert('edited row id:' + rowEntity.id + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue );
+           //  $window.alert('edited row id:' + rowEntity.id + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue );
              $scope.$apply();
            });
 
@@ -444,3 +445,18 @@ return textToShow;
 
 
 }]);
+
+app.directive('customValidation', function(uiGridEditConstants) {
+    return {
+        scope: false,
+        require: 'ngModel',
+        link: function (scope, element, attrs, ngModel) {
+            element.bind('blur', function(evt) {
+              if (scope.inputForm && !scope.inputForm.$valid) {
+                //evt.stopImmediatePropagation();
+              }
+            });
+
+        }
+    };
+}) 
