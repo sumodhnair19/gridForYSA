@@ -6,6 +6,8 @@ angular.module('addressFormatter', []).filter('address', function () {
   };
 });
 
+
+
 app.controller('MainCtrl', ['$scope', '$http', '$window', 'uiGridValidateService', '$q',function ($scope, $http, $window, uiGridValidateService,$q) {
 
 
@@ -57,6 +59,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$window', 'uiGridValidateService
                 if(currentCell.name === rowEntity.name) {
                   return true;
                 } else {
+                    rowEntity.oldName = rowEntity.name ;
                     rowEntity.name = currentCell.name;
                     return false;
                 }
@@ -79,9 +82,25 @@ app.controller('MainCtrl', ['$scope', '$http', '$window', 'uiGridValidateService
   $scope.gridOptions.columnDefs = [
     { name: 'id', enableCellEdit: false, width: '10%' },
     { name: 'name', displayName: 'Name (editable)', width: '20%',headerTooltip:true,cellTitleValidator : true,cellTooltipValidator:true,
-      validators: {required: true, highlightFields: 'M'},  cellTemplate: 'ui-grid/cellTitleValidator'}
+      validators: {required: true, highlightFields: ''},  cellTemplate: '<div class=\"ui-grid-cell-contents\" ng-class=\"{invalid:grid.validate.isInvalid(row.entity,col.colDef)}\" title=\"{{grid.appScope.myMethod(grid.validate.isInvalid(row.entity,col.colDef),row.entity,col.colDef)}}">{{COL_FIELD CUSTOM_FILTERS}}</div>'}
   ];
 
+
+
+
+$scope.myMethod = function(trueOrFalse,rowEntity,colDef) {
+
+console.log(trueOrFalse);
+var textToShow= "";
+if(rowEntity["$$errorsname"] && rowEntity["$$errorsname"]["highlightFields"]) {
+   textToShow = "Properties have been changed by another user, new change :" + rowEntity.oldName;
+} else {
+    textToShow = rowEntity.name;
+}
+
+return textToShow;
+
+}
 
  $scope.gridApi ={};
  $scope.onLoadValidation  = true;
