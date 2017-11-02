@@ -6,3 +6,24 @@
 .header-filtered {
   color: blue;
 }
+/* Hack - Autocomplete */
+.ngCell {
+  overflow: visible;
+}
+
+.ngCell .typeaheadcontainer {
+  display: table; margin-right: auto; margin-left: auto;width:95%
+}
+
+.ngCell .typeaheadcontrol {
+  width:100%
+}
+
+
+/*<=validation styles>*/
+
+input.ng-invalid.ng-dirty {
+    background-color:#EDC5D1;
+}
+
+/*<#validation styles>*/

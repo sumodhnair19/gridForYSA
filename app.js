@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngTouch', 'ui.grid', 'ui.grid.edit', 'ui.grid.cellNav', 'ui.grid.validate', 'addressFormatter']);
+var app = angular.module('app', ['ngTouch', 'ui.grid', 'ui.grid.edit', 'ui.grid.cellNav', 'ui.grid.validate', 'addressFormatter','ui.bootstrap']);
 
 angular.module('addressFormatter', []).filter('address', function() {
     return function(input) {
@@ -8,7 +8,7 @@ angular.module('addressFormatter', []).filter('address', function() {
 
 
 
-app.controller('MainCtrl', ['$scope', '$http', '$window', 'uiGridValidateService', '$q', function($scope, $http, $window, uiGridValidateService, $q) {
+app.controller('MainCtrl', ['$scope', '$http', '$window', 'uiGridValidateService', '$q', 'statesData',function($scope, $http, $window, uiGridValidateService, $q,statesData) {
 
 
     $scope.addData = function() {
@@ -51,6 +51,67 @@ app.controller('MainCtrl', ['$scope', '$http', '$window', 'uiGridValidateService
     };
 
 
+ $scope.$watch('selected', function(newValue, oldValue) {
+   console.log("inside selected watcher", newValue, oldValue);
+       if (newValue)
+         console.log(oldValue+"->"+newValue);
+    });
+
+    $scope.states = statesData.getStates();
+    $scope.myData = [
+      {
+        id: 1,
+        state: {
+          "id": 1,
+          "name": "Alabama",
+          "abbreviation": "AL"
+        },
+        age: 50
+      },
+      {
+        id: 2,
+        state: {
+          "id": 5,
+          "name": "Arkansas",
+          "abbreviation": "AR"
+        },
+        age: 50
+      },
+      {
+        id: 3,
+        state: {
+          "id": 9,
+          "name": "Delaware",
+          "abbreviation": "DE"
+        },
+        age: 50
+      },
+      {
+        id: 4,
+        state: {
+          "id": 12,
+          "name": "Florida",
+          "abbreviation": "FL"
+        },
+        age: 50
+      },
+      {
+        id: 5,
+        state: {
+          "id": 15,
+          "name": "Hawaii",
+          "abbreviation": "HI"
+        },
+
+        age: 50
+      }
+    ];
+
+ $scope.typeaheadSelected = function(entity, selectedItem,rowRenderIndex) {
+    entity.state = selectedItem;
+    $scope.myData[rowRenderIndex].state = selectedItem;
+ };
+
     uiGridValidateService.setValidator('highlightFields',
         function(argument) {
             return function(oldValue, newValue, rowEntity, colDef) {
@@ -75,6 +136,15 @@ app.controller('MainCtrl', ['$scope', '$http', '$window', 'uiGridValidateService
         },
         function(argument) {}
     );
+    $scope.cellStateEditableTemplate = '<div><form name="inputForm"><input type="text" ' +
+  'ng-class="colt"' +
+  'ng-model="grid.appScope.myData[rowRenderIndex].state" ' +
+  'uib-typeahead="name as state.name for state in grid.appScope.states | filter:$viewValue | limitTo:8" ' +
+  'ng-required="true" ' +
+  'typeahead-editable ="false"' +
+  'typeahead-on-select="grid.appScope.typeaheadSelected(row.entity, $item, rowRenderIndex)" ' +
+  '/></form></div>';
+
 
     $scope.gridOptions = {
         enableCellEditOnFocus: true,
@@ -95,8 +165,16 @@ app.controller('MainCtrl', ['$scope', '$http', '$window', 'uiGridValidateService
                     required: true,
                     highlightFields: ''
                 },
-                cellTemplate: '<div class=\"ui-grid-cell-contents\" ng-class=\"{invalid:grid.validate.isInvalid(row.entity,col.colDef)}\" title=\"{{grid.appScope.highlightError(grid.validate.isInvalid(row.entity,col.colDef),row.entity,col.colDef)}}">{{COL_FIELD CUSTOM_FILTERS}}</div>'
-            }
+                editableCellTemplate :  "<div><form name=\"inputForm\"><input type=\"INPUT_TYPE\" typeahead-editable =\"false\" ng-class=\"'colt' + col.uid\"  uib-typeahead=\"name as state.name for state in grid.appScope.states | filter:$viewValue | limitTo:8\"  typeahead-on-select=\"grid.appScope.typeaheadSelected(row.entity, $item,rowRenderIndex)\" ui-grid-editor ng-model=\"grid.appScope.myData[rowRenderIndex].state\"></form></div>",
+                //cellTemplate :  "<div><form name=\"inputForm\"><input type=\"INPUT_TYPE\" typeahead-editable =\"false\" ng-class=\"'colt' + col.uid\"  uib-typeahead=\"name as state.name for state in grid.appScope.states | filter:$viewValue | limitTo:8\"  typeahead-on-select=\"grid.appScope.typeaheadSelected(row.entity, $item)\" ui-grid-editor ng-model=\"grid.appScope.myData[rowRenderIndex].state\"></form></div>"
+
+                cellTemplate: '<div class=\"ui-grid-cell-contents\"  ng-class=\"{invalid:grid.validate.isInvalid(row.entity,col.colDef)}\"  title=\"{{grid.appScope.highlightError(grid.validate.isInvalid(row.entity,col.colDef),row.entity,col.colDef)}}">{{COL_FIELD CUSTOM_FILTERS}}</div>'
+              //   editableCellTemplate :$scope.cellStateEditableTemplate,
+              // cellTemplate : $scope.cellStateEditableTemplate
+
+            },
+            { field: 'company' ,enableFiltering: false,
+            enableCellEdit: true},
         ],
         onRegisterApi : function(gridApi) {
             //set gridApi on scope
