@@ -110,6 +110,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$window', 'uiGridValidateService
  $scope.typeaheadSelected = function(entity, selectedItem,rowRenderIndex) {
     entity.state = selectedItem;
     $scope.myData[rowRenderIndex].state = selectedItem;
+    $scope.$broadcast('uiGridEventEndCellEdit');
  };
 
     uiGridValidateService.setValidator('highlightFields',
