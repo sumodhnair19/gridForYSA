@@ -17303,7 +17303,7 @@ module.filter('px', function() {
                     }
                   });
 
-                //  $elm.on('blur', $scope.stopEdit);
+    // Sumodh : commented this line as it was blocking autosuggest     //  $elm.on('blur', $scope.stopEdit);
                 });
 
 
